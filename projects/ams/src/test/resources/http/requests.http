@@ -1,0 +1,12 @@
+GET http://localhost:8080/login HTTP/1.1
+
+###
+
+POST http://localhost:8080/login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=user&password=7f6b6d84-c0d3-4d4a-8a9c-ae6166e6a303&_csrf=80044e54-5d01-472d-9ac5-5eb14e55b86c
+
+###
+
+GET http://localhost:8080/abc HTTP/1.1
