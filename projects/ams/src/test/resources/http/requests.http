@@ -10,3 +10,7 @@ username=user&password=pass&_csrf=f1e1dd39-40a3-417e-be94-6255befb7f0f
 ###
 
 GET http://localhost:8080/abc HTTP/1.1
+
+### Żądanie do kontrolera rejestracji - powinno zwrócić treść strony rejestracji
+
+GET http://localhost:8080/register
