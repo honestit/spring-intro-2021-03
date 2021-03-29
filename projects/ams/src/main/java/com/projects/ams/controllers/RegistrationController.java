@@ -4,6 +4,7 @@ import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +17,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RegistrationController {
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public RegistrationController(UserRepository userRepository) {
+    /*
+    Wstrzykiwania przez konstruktor używamy dla zależności, które są wymagane,
+    a więc nasz kod bez nich nie może działać. Wstrzykiwania przez settery używamy
+    dla zależności opcjonalnych oznaczając je jednocześnie jako nie wymagane (będzie null
+    jeżeli nie ma kogo tam wstrzyknąć).
+     */
+//    @Autowired(required = false)
+//    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+//        this.passwordEncoder = passwordEncoder;
+//    }
+
+    @Autowired // Jeżeli w klasie jest tylko jeden konstruktor, to @Autowired nie jest obowiązkowe
+    public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -49,7 +63,8 @@ public class RegistrationController {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setActive(true);
