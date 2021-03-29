@@ -14,3 +14,35 @@ GET http://localhost:8080/abc HTTP/1.1
 ### Żądanie do kontrolera rejestracji - powinno zwrócić treść strony rejestracji
 
 GET http://localhost:8080/register
+
+### Żądanie do kontrolera rejestracji - z pustymi danymi formularza
+
+POST http://localhost:8080/register
+
+### Żądanie do kontrolera rejestracji - z danymi
+
+POST http://localhost:8080/register
+Content-Type: application/x-www-form-urlencoded
+
+username=u_test&password=p_test&firstName=f_test&lastName=l_test
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
