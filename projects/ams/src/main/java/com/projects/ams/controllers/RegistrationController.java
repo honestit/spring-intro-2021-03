@@ -1,7 +1,9 @@
 package com.projects.ams.controllers;
 
 import com.projects.ams.model.domain.User;
+import com.projects.ams.model.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
+
+    private UserRepository userRepository;
+
+    @Autowired
+    public RegistrationController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping
     /*
@@ -47,7 +56,16 @@ public class RegistrationController {
 
         log.debug("User to save: {}", user);
 
-        // A jak zapisać do bazy?
+        // A jak zapisać do bazy? -> użyć Spring Data i repozytoriów :)
+        // W repozytoriach Spring Data nie ma osobnych metod do utworzenia i do edycji,
+        // jest jedna metoda: zapisz zmianę w repozytorium
+        if (userRepository.existsByUsername(username)) {
+            log.warn("User with same username already exists");
+            return "registration-form";
+        }
+        userRepository.save(user);
+        log.info("Saved user: {}", user);
+
         return "redirect:/"; // słowo redirect oznacza przekierowanie czyli wysłanie kolejnego żądania
         // na wskazany adres. Może być adres wewnątrz aplikacji, np: "/" albo "/login" albo adres
         // zewnętrzny, np: http://google.com itd
