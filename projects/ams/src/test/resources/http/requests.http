@@ -5,7 +5,7 @@ GET http://localhost:8080/login HTTP/1.1
 POST http://localhost:8080/login HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
-username=user&password=pass&_csrf=f1e1dd39-40a3-417e-be94-6255befb7f0f
+username=test&password=test
 
 ###
 
@@ -28,7 +28,12 @@ username=u_test&password=p_test&firstName=f_test&lastName=l_test
 
 ###
 
+POST localhost:8080/add-advert
+Content-Type: application/x-www-form-urlencoded
 
+title=Hakier&description=psuje
+
+###
 
 
 
