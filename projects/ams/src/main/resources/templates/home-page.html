@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,11 +28,25 @@
         <div class="col-5"></div>
     </div>
 
-    <div class="row form-div">
+    <div class="row form-div" sec:authorize="isAuthenticated()">
         <div class="col-2"></div>
         <div class="col-8">
 
-            <!-- Tutaj w przyszłości będzie formularz dodawania ogłoszenia -->
+            <form method="post" th:action="@{/add-advert}">
+                <p>
+                    <label>Tytuł:
+                        <input type="text" name="title"/>
+                    </label>
+                </p>
+                <p>
+                    <label>Opis:
+                        <textarea name="description" cols="80" rows="6"></textarea>
+                    </label>
+                </p>
+                <p>
+                    <button type="submit">Dodaj</button>
+                </p>
+            </form>
 
         </div>
         <div class="col-2"></div>
