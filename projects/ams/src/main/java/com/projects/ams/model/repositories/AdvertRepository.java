@@ -8,4 +8,6 @@ import java.util.List;
 public interface AdvertRepository extends JpaRepository<Advert, Long> {
 
     List<Advert> findAllByOrderByPostedDesc();
+
+    List<Advert> findAllByUserUsernameOrderByPostedDesc(String username);
 }
