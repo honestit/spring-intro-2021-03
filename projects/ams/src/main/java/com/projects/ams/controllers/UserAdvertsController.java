@@ -87,4 +87,44 @@ public class UserAdvertsController {
         return "redirect:/user-adverts";
     }
 
+    /*
+
+    Edycja ogłoszenia made by JAVA POL 64 ???
+
+    1. Dodać guzik (button w formularzu) na liście ogłoszeń użytkownika
+       - musimy przesłać id ogłoszenia, które edytujemy -> input o typie hidden, nazwie "advertId" i wartości równej id ogłoszenia
+
+    2. Nowa strona z formularzem do edycji ogłoszenia (edit-user-advert-page.html)
+       - jaką metodą wysyłamy formularz? -> post
+       - jaka akcja w formularzu? -> th:action="@{/edit-advert}"
+       - jakie pola? ->
+            - input typu hidden z nazwą "advertId",
+            - input dla wprowadzenia title (użyć atrybuty value, a dokładnie to th:value="${advert.title}")
+            - textarea dla wprowadzenia description (j.w.)
+            - guzik do edycji (o typie "submit")
+       - link do powrotu do listy ogłoszeń (w CSSach zrobimy, aby był piękny jak guzik)
+
+    3. Potrzebujemy obsługi żądania wyświetlenia strony z formularzem do edycji
+       - jaka ścieżka? -> "/edit-advert"
+       - jakie mapowanie? -> @GetMapping
+       - co zwracamy? -> return "edit-user-advert-page"
+       - jakie parametry żądania? -> advertId
+       - jakie parametry metody? -> @RequestParam Long advertId, Model model
+       - w jaki sposób przygotujemy dane dla widoku? ->
+          - pobieramy ogłoszenie na podstawie advertId + username (zalogowany użytkownik)
+          - wstawiamy atrybut do modelu reprezentujący ogłoszenie do edycji (które przed chwilą pobraliśmy z repozytorium)
+
+    4. Potrzebujemy obsługi żądania edycji ogłoszenia w kontrolerze UserAdvertsController
+       - jaka ścieżka? -> "/edit-advert"
+       - jakie mapowanie? -> @PostMapping
+       - co zwracamy? -> return "redirect:/user-adverts"
+       - jak zedytujemy? ->
+            - pobieramy ogłoszenie na podstawie advertId + username (zalogowany użytkownik)
+            - zamieniamy tytuł i opis na nowe
+            - zapis w repozytorium (advertRepository.save)
+       - jakie parametry żądania? -> advertId, title, description
+       - jakie parametry metody? -> @RequestParam Long advertId, @RequestParam String title, @RequestParam String description
+
+     */
+
 }
