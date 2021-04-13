@@ -35,7 +35,12 @@ title=Hakier&description=psuje
 
 ###
 
+POST localhost:8080/delete-advert
+Content-Type: application/x-www-form-urlencoded
 
+advertId=4
+
+###
 
 
 

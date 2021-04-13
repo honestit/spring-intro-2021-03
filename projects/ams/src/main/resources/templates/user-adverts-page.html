@@ -47,7 +47,12 @@
                     <td th:text="${advert.description}">Interesujący opis</td>
                     <td th:text="${advert.user.username}">marekwojak</td>
                     <td th:text="${advert.posted.toLocalDate()}">2021-03-30</td>
-                    <td></td>
+                    <td>
+                        <form method="post" th:action="@{/delete-advert}">
+                            <input type="hidden" name="advertId" th:value="${advert.id}"/>
+                            <button class="btn btn-danger" type="submit">Usuń</button>
+                        </form>
+                    </td>
                 </tr>
                 <!-- Koniec fragmentu -->
             </table>
