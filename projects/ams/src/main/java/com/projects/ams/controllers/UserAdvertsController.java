@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -28,5 +29,13 @@ public class UserAdvertsController {
         List<Advert> adverts = advertRepository.findAllByUserUsernameOrderByPostedDesc(username);
         model.addAttribute("adverts", adverts);
         return "user-adverts-page";
+    }
+
+    @GetMapping(path = "/user-adverts", params = {"username"})
+    public String getUserAdverts(Model model, @RequestParam String username) {
+        List<Advert> adverts = advertRepository.findAllByUserUsernameOrderByPostedDesc(username);
+        model.addAttribute("adverts", adverts);
+        model.addAttribute("username", username);
+        return "some-user-adverts-page";
     }
 }
