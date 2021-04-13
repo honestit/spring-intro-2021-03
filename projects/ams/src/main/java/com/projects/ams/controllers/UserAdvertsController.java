@@ -33,6 +33,11 @@ public class UserAdvertsController {
 
     @GetMapping(path = "/user-adverts", params = {"username"})
     public String getUserAdverts(Model model, @RequestParam String username) {
+        String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUsername.equals(username)) {
+            // /user-adverts?username=test -> /user-adverts
+            return "redirect:/user-adverts";
+        }
         List<Advert> adverts = advertRepository.findAllByUserUsernameOrderByPostedDesc(username);
         model.addAttribute("adverts", adverts);
         model.addAttribute("username", username);
