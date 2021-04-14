@@ -3,6 +3,7 @@ package com.projects.ams.controllers;
 import com.projects.ams.model.domain.Advert;
 import com.projects.ams.model.repositories.AdvertRepository;
 import com.projects.ams.model.repositories.UserRepository;
+import com.projects.ams.requests.EditAdvertRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -128,20 +129,31 @@ public class UserAdvertsController {
 
      */
 
+//    private static void checkNonNull(Object object) {
+//        if (object == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//    }
+
     @GetMapping("/edit-advert")
     public String prepareEditAdvertPage(@RequestParam Long advertId, Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Advert advert = advertRepository.findByIdAndUserUsername(advertId, username);
+//        checkNonNull(advert);
+        if (advert == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         model.addAttribute("advert", advert);
         return "edit-user-advert-page";
     }
 
     @PostMapping("/edit-advert")
-    public String processEditAdvertPage(@RequestParam Long advertId, @RequestParam String title, @RequestParam String description) {
+    /*
+    public String processEditAdvertPage(Long advertId, @RequestParam String title, @RequestParam String description)
+     */
+    public String processEditAdvertPage(EditAdvertRequest request) {
+        log.debug("Edit advert with request: {}", request);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Advert advert = advertRepository.findByIdAndUserUsername(advertId, username);
-        advert.setTitle(title);
-        advert.setDescription(description);
+        Advert advert = advertRepository.findByIdAndUserUsername(request.getAdvertId(), username);
+        if (advert == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        advert.setTitle(request.getTitle());
+        advert.setDescription(request.getDescription());
         advertRepository.save(advert);
         return "redirect:/user-adverts";
     }
