@@ -52,6 +52,10 @@
                             <input type="hidden" name="advertId" th:value="${advert.id}"/>
                             <button class="btn btn-danger" type="submit">Usuń</button>
                         </form>
+                        <form method="get" th:action="@{/edit-advert}">
+                            <input type="hidden" name="advertId" th:value="${advert.id}"/>
+                            <button class="btn btn-success" type="submit">Edytuj</button>
+                        </form>
                     </td>
                 </tr>
                 <!-- Koniec fragmentu -->

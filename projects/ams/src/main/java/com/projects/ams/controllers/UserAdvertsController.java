@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,5 +127,23 @@ public class UserAdvertsController {
        - jakie parametry metody? -> @RequestParam Long advertId, @RequestParam String title, @RequestParam String description
 
      */
+
+    @GetMapping("/edit-advert")
+    public String prepareEditAdvertPage(@RequestParam Long advertId, Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Advert advert = advertRepository.findByIdAndUserUsername(advertId, username);
+        model.addAttribute("advert", advert);
+        return "edit-user-advert-page";
+    }
+
+    @PostMapping("/edit-advert")
+    public String processEditAdvertPage(@RequestParam Long advertId, @RequestParam String title, @RequestParam String description) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Advert advert = advertRepository.findByIdAndUserUsername(advertId, username);
+        advert.setTitle(title);
+        advert.setDescription(description);
+        advertRepository.save(advert);
+        return "redirect:/user-adverts";
+    }
 
 }
