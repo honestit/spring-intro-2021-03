@@ -5,6 +5,8 @@ import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.AdvertRepository;
 import com.projects.ams.model.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,11 +33,17 @@ public class HomePageController {
 
     @GetMapping
     public String prepareHomePage(Model model) {
-        List<Advert> adverts = advertRepository.findAllByOrderByPostedDesc();
-        String checkMe = "abc";
+        List<Advert> adverts;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.debug("What is our authentication? {}", authentication.getClass());
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            adverts = advertRepository.findFirst10ByOrderByPostedDesc();
+        } else {
+            adverts = advertRepository.findAllByOrderByPostedDesc();
+        }
         log.debug("Collected {} adverts for home page", adverts.size());
-        // Wstawiamy do modelu atrybut o nazwie "adverts" (od tej pory na strony home-page.html będziemy mogli
-        // korzystać ze zmiennej o tej samej nazwie. Pod tą nazwę podstawiamy wartość czyli naszą listę ogłoszeń.
+        // Wstawiamy do modelu atrybut o nazwie "adverts" (od tej pory na stronie home-page.html będziemy mogli
+        // korzystać ze zmiennej o tej samej nazwie. Pod ten atrybut podstawiamy wartość czyli naszą listę ogłoszeń.
         model.addAttribute("adverts", adverts);
         return "home-page";
     }
