@@ -9,6 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 @Component
 public class StartupDataLoader {
@@ -23,7 +24,7 @@ public class StartupDataLoader {
 
     @EventListener
     public void loadData(ContextRefreshedEvent event) {
-        User user = new User(null, "test", "{noop}test", "test", "test", true);
+        User user = new User(null, "test", "{noop}test", "test", "test", true, new HashSet<>());
         userRepository.save(user);
 
         Advert advert1 = new Advert(null, "Kupię psa", "Kupię mądrego psa",
@@ -37,7 +38,7 @@ public class StartupDataLoader {
         advertRepository.save(advert2);
         advertRepository.save(advert3);
 
-        User user2 = new User(null, "test2", "{noop}test2", "test2", "test2", true);
+        User user2 = new User(null, "test2", "{noop}test2", "test2", "test2", true, new HashSet<>());
         userRepository.save(user2);
 
         for (int i = 0; i < 10; i++) {

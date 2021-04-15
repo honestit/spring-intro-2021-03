@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -49,7 +49,14 @@
                     <td th:text="${advert.description}">Interesujący opis</td>
                     <td th:text="${advert.user.username}">marekwojak</td>
                     <td th:text="${advert.posted.toLocalDate()}">2021-03-30</td>
-                    <td></td>
+                    <td>
+                        <span
+                                th:if="${not #authentication.name.equals(advert.user.username)}">
+                            <form method="post" th:action="@{/favourite-adverts}">
+                                <input type="hidden" name="advertId" th:value="${advert.id}"/>
+                                <button type="submit">Polub</button>
+                            </form>
+                        </span></td>
                 </tr>
                 <!-- Koniec fragmentu -->
             </table>

@@ -3,12 +3,15 @@ package com.projects.ams.model.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "users")
 @Setter @Getter
-@ToString(exclude = { "password", })
+@ToString(exclude = { "password", "favouriteAdverts"})
 @EqualsAndHashCode(of = { "username" })
 @NoArgsConstructor @AllArgsConstructor
 public class User {
@@ -26,5 +29,10 @@ public class User {
     private String lastName;
     @Column(nullable = false)
     private Boolean active = Boolean.FALSE;
+
+//    @ManyToMany(fetch = FetchType.EAGER) -> tego nie należy używać, bo to chamskie rozwiązanie ;)
+    // zamiast tego zobacz metodę findUserWithFavouriteAdvertsByUsername w UserRepository
+    @ManyToMany
+    private Set<Advert> favouriteAdverts = new HashSet<>();
 
 }

@@ -17,44 +17,17 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
             integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
             crossorigin="anonymous"></script>
-    <title>Ogłoszenia</title>
+    <title>Twoje ulubione ogłoszenia</title>
 </head>
 <body>
 <div class="container">
 
-    <div class="row" style="margin-top: 40px; margin-bottom: 10px" sec:authorize="isAuthenticated()">
-        <div class="col-1"></div>
-        <div class="col-6"><h2>Dodaj ogłoszenie</h2></div>
-        <div class="col-5"></div>
-    </div>
-
-    <div class="row form-div" sec:authorize="isAuthenticated()">
-        <div class="col-2"></div>
-        <div class="col-8">
-
-            <form method="post" th:action="@{/add-advert}">
-                <p>
-                    <label>Tytuł:
-                        <input type="text" name="title"/>
-                    </label>
-                </p>
-                <p>
-                    <label>Opis:
-                        <textarea name="description" cols="80" rows="6"></textarea>
-                    </label>
-                </p>
-                <p>
-                    <button type="submit">Dodaj</button>
-                </p>
-            </form>
-
-        </div>
-        <div class="col-2"></div>
-    </div>
 
     <div class="row" style="margin-top: 40px; margin-bottom: 10px">
         <div class="col-1"></div>
-        <div class="col-6"><h2>Lista ogłoszeń</h2></div>
+        <div class="col-6">
+            <h2>Twoje ulubione ogłoszenia</h2>
+        </div>
         <div class="col-5"></div>
     </div>
 
@@ -67,27 +40,16 @@
                     <th>Treść</th>
                     <th>Autor</th>
                     <th>Data dodania</th>
-                    <th sec:authorize="isAuthenticated()">Akcje</th>
+                    <td>Akcje</td>
                 </tr>
                 <!-- Poniższy fragment powinien być powtórzony dla każdego ogłoszenia -->
                 <tr th:each="advert, stat : ${adverts}">
                     <td th:text="${stat.count}">1</td>
                     <td th:text="${advert.title}">Ciekawy tytuł</td>
                     <td th:text="${advert.description}">Interesujący opis</td>
-                    <td>
-                        <a href="/user-adverts?username=marekwojak"
-                           th:href="@{/user-adverts(username=${advert.user.username})}"
-                           th:text="${advert.user.username}">marekwojak</a>
-                    </td>
+                    <td th:text="${advert.user.username}">marekwojak</td>
                     <td th:text="${advert.posted.toLocalDate()}">2021-03-30</td>
-                    <td sec:authorize="isAuthenticated()">
-                        <span th:if="${not #authentication.name.equals(advert.user.username)}">
-                            <form method="post" th:action="@{/favourite-adverts}">
-                                <input type="hidden" name="advertId" th:value="${advert.id}"/>
-                                <button type="submit">Polub</button>
-                            </form>
-                        </span>
-                    </td>
+                    <td></td>
                 </tr>
                 <!-- Koniec fragmentu -->
             </table>
