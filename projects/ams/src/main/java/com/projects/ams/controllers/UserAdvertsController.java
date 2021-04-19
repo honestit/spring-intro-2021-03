@@ -9,11 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.awt.*;
 import java.util.List;
 import java.util.Optional;
@@ -145,12 +148,17 @@ public class UserAdvertsController {
 
     @PostMapping("/edit-advert")
     /*
-    public String processEditAdvertPage(Long advertId, @RequestParam String title, @RequestParam String description)
+    public String processEditAdvertPage(@RequestParam Long advertId, @RequestParam String title, @RequestParam String description)
      */
-    public String processEditAdvertPage(EditAdvertRequest request) {
+    public String processEditAdvertPage(@Valid @ModelAttribute("advert") EditAdvertRequest request, Errors errors/*, Model model*/) {
         log.debug("Edit advert with request: {}", request);
+        if (errors.hasErrors()) {
+            errors.getFieldErrors().forEach(fieldError -> log.debug("Error in request: {}", fieldError));
+//            model.addAttribute("advert", request);
+            return "edit-user-advert-page";
+        }
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Advert advert = advertRepository.findByIdAndUserUsername(request.getAdvertId(), username);
+        Advert advert = advertRepository.findByIdAndUserUsername(request.getId(), username);
         if (advert == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         advert.setTitle(request.getTitle());
         advert.setDescription(request.getDescription());
