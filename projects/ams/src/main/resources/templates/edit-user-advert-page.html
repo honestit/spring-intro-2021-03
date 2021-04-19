@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -32,17 +32,29 @@
         <div class="col-2"></div>
         <div class="col-8">
 
-            <form method="post" th:action="@{/edit-advert}">
-                <input type="hidden" name="id" th:value="${advert.id}"/>
+            <!-- 1. Powiązanie formularza z obiektem z modelu (th:object)  -->
+            <form method="post" th:action="@{/edit-advert}" th:object="${advert}">
+                <!-- 2. Każde pole, które jest powiązane z polem obiektu uzupełniamy o th:field -->
+                <input type="hidden" th:field="*{id}"/>
                 <p>
                     <label>Tytuł:
-                        <input type="text" name="title" th:value="${advert.title}"/>
+                        <input type="text" th:field="*{title}"/>
                     </label>
+                <ul th:if="${#fields.hasErrors('title')}">
+                    <li th:each="error : ${#fields.errors('title')}" th:text="${error}">Błąd numer
+                        XXX
+                    </li>
+                </ul>
                 </p>
                 <p>
                     <label>Opis:
-                        <textarea name="description" cols="80" rows="6" th:text="${advert.description}"></textarea>
+                        <textarea cols="80" rows="6" th:field="*{description}"></textarea>
                     </label>
+                <ul th:if="${#fields.hasErrors('description')}">
+                    <li th:each="error : ${#fields.errors('description')}" th:text="${error}">Błąd numer
+                        XXX
+                    </li>
+                </ul>
                 </p>
                 <p>
                     <button type="submit">Edytuj</button>

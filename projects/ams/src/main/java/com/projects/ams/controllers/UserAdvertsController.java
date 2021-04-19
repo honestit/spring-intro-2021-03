@@ -140,7 +140,6 @@ public class UserAdvertsController {
     public String prepareEditAdvertPage(@RequestParam Long advertId, Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Advert advert = advertRepository.findByIdAndUserUsername(advertId, username);
-//        checkNonNull(advert);
         if (advert == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         model.addAttribute("advert", advert);
         return "edit-user-advert-page";
@@ -150,11 +149,10 @@ public class UserAdvertsController {
     /*
     public String processEditAdvertPage(@RequestParam Long advertId, @RequestParam String title, @RequestParam String description)
      */
-    public String processEditAdvertPage(@Valid @ModelAttribute("advert") EditAdvertRequest request, Errors errors/*, Model model*/) {
+    public String processEditAdvertPage(@Valid @ModelAttribute("advert") EditAdvertRequest request, Errors errors) {
         log.debug("Edit advert with request: {}", request);
         if (errors.hasErrors()) {
             errors.getFieldErrors().forEach(fieldError -> log.debug("Error in request: {}", fieldError));
-//            model.addAttribute("advert", request);
             return "edit-user-advert-page";
         }
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
