@@ -22,7 +22,8 @@
 <body>
 <div class="container">
 
-    <div class="row" style="margin-top: 40px; margin-bottom: 10px" sec:authorize="isAuthenticated()">
+    <div class="row" style="margin-top: 40px; margin-bottom: 10px"
+         sec:authorize="isAuthenticated()">
         <div class="col-1"></div>
         <div class="col-6"><h2>Dodaj ogłoszenie</h2></div>
         <div class="col-5"></div>
@@ -32,16 +33,26 @@
         <div class="col-2"></div>
         <div class="col-8">
 
-            <form method="post" th:action="@{/add-advert}">
+            <form method="post" th:action="@{/add-advert}" th:object="${advert}">
                 <p>
                     <label>Tytuł:
-                        <input type="text" name="title"/>
+                        <input type="text" th:field="*{title}"/>
                     </label>
+                <ul th:if="${#fields.hasErrors('title')}">
+                    <li th:each="error : ${#fields.errors('title')}" th:text="${error}">Błąd numer
+                        XXX
+                    </li>
+                </ul>
                 </p>
                 <p>
                     <label>Opis:
-                        <textarea name="description" cols="80" rows="6"></textarea>
+                        <textarea th:field="*{description}" cols="80" rows="6"></textarea>
                     </label>
+                <ul th:if="${#fields.hasErrors('description')}">
+                    <li th:each="error : ${#fields.errors('description')}" th:text="${error}">Błąd numer
+                        XXX
+                    </li>
+                </ul>
                 </p>
                 <p>
                     <button type="submit">Dodaj</button>
