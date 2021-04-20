@@ -2,14 +2,18 @@ package com.projects.ams.controllers;
 
 import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.UserRepository;
+import com.projects.ams.requests.RegisterUserRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraintvalidators.RegexpURLValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.LocalDate;
 
 @Slf4j
 @Controller
@@ -41,8 +45,9 @@ public class RegistrationController {
      * @GetMapping("/register") - można tak zrobić gdyby nie używać
      * @RequestMapping("/register") na klasie kontrolera
      */
-    public String prepareRegistrationPage() {
+    public String prepareRegistrationPage(Model model) {
         log.debug("Wywołanie strony rejestracji");
+        model.addAttribute("registration", new RegisterUserRequest());
         return "registration-form";
         // Domyślna konfiguracja daje nam plik wynikowy:
         // templates/registration-form.html
@@ -53,20 +58,17 @@ public class RegistrationController {
      * @PostMapping("/register") - można tak zrobić gdyby nie używać
      * @RequestMapping("/register") na klasie kontrolera
      */
-    public String processRegistrationData(
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String firstName,
-            @RequestParam String lastName) {
-        log.debug("username = {}, password = ***, firstName = {}, lastName = {}",
-                username, firstName, lastName);
-
+    public String processRegistrationData(@Valid @ModelAttribute("registration") RegisterUserRequest request, Errors errors) {
+        log.debug("Request data: {}", request);
+        if (errors.hasErrors()) {
+            return "registration-form";
+        }
         User user = new User();
-        user.setUsername(username);
-        String encodedPassword = passwordEncoder.encode(password);
+        user.setUsername(request.getUsername());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
         user.setActive(true);
 
         log.debug("User to save: {}", user);
@@ -74,7 +76,7 @@ public class RegistrationController {
         // A jak zapisać do bazy? -> użyć Spring Data i repozytoriów :)
         // W repozytoriach Spring Data nie ma osobnych metod do utworzenia i do edycji,
         // jest jedna metoda: zapisz zmianę w repozytorium
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(request.getUsername())) {
             log.warn("User with same username already exists");
             return "registration-form";
         }
