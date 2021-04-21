@@ -45,5 +45,11 @@ public class StartupDataLoader {
             Advert advert4 = new Advert(null, "Zrobię Springa " + i, "Zrobię Spring jak ktoś nie umie sam", LocalDateTime.of(2021, 4, 12, 0 + i, 0), user2);
             advertRepository.save(advert4);
         }
+
+        User user3 = new User(null, "test3", "{noop}test3", "test3", "test3", true, new HashSet<>());
+        User user4 = new User(null, "test4", "{noop}test4", "test4", "test4", true, new HashSet<>());
+
+        userRepository.save(user3);
+        userRepository.save(user4);
     }
 }
