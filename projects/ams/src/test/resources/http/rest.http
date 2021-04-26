@@ -17,3 +17,7 @@ GET localhost:8080/api/adverts/4
 ### Usuwanie konkretnego użytkownika
 
 DELETE localhost:8080/api/users/4
+
+### Usuwanie konkretnego ogłoszenia
+
+DELETE localhost:8080/api/adverts/10

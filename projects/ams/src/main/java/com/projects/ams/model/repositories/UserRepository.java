@@ -1,5 +1,6 @@
 package com.projects.ams.model.repositories;
 
+import com.projects.ams.model.domain.Advert;
 import com.projects.ams.model.domain.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"roles", "favouriteAdverts"})
     List<User> findAllWithDataBy();
+
+    Long countByFavouriteAdvertsContains(Advert advert);
 }
