@@ -1,0 +1,7 @@
+### Pobranie listy użytkowników
+
+GET localhost:8080/api/users
+
+### Pobranie listy ogłoszeń
+
+GET localhost:8080/api/adverts

@@ -1,5 +1,6 @@
 package com.projects.ams.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -35,11 +37,13 @@ public class User implements Serializable {
         joinColumns = @JoinColumn(name = "username", referencedColumnName = "username")
     )
     @Column(name = "role")
+    @JsonIgnore
     private Set<String> roles = new HashSet<>();
 
 //    @ManyToMany(fetch = FetchType.EAGER) -> tego nie należy używać, bo to chamskie rozwiązanie ;)
     // zamiast tego zobacz metodę findUserWithFavouriteAdvertsByUsername w UserRepository
     @ManyToMany
+    @JsonIgnore
     private Set<Advert> favouriteAdverts = new HashSet<>();
 
 }

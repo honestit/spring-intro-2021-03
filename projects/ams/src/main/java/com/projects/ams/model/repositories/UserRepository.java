@@ -4,6 +4,8 @@ import com.projects.ams.model.domain.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
@@ -19,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // ale ładnie wygląda i podkreśla, co metoda robi ;)
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"favouriteAdverts"})
     User findWithFavouriteAdvertsByUsername(String username);
+
+    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"roles", "favouriteAdverts"})
+    List<User> findAllWithDataBy();
 }
