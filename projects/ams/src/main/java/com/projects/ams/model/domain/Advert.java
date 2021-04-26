@@ -1,5 +1,6 @@
 package com.projects.ams.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,5 +26,6 @@ public class Advert {
     private LocalDateTime posted;
 
     @ManyToOne(optional = false)
+    @JsonIgnore
     private User user;
 }
