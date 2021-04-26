@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class StartupDataLoader {
@@ -24,7 +25,7 @@ public class StartupDataLoader {
 
     @EventListener
     public void loadData(ContextRefreshedEvent event) {
-        User user = new User(null, "test", "{noop}test", "test", "test", true, new HashSet<>());
+        User user = new User(null, "test", "{noop}test", "test", "test", true, Set.of("ROLE_USER"), new HashSet<>());
         userRepository.save(user);
 
         Advert advert1 = new Advert(null, "Kupię psa", "Kupię mądrego psa",
@@ -38,7 +39,7 @@ public class StartupDataLoader {
         advertRepository.save(advert2);
         advertRepository.save(advert3);
 
-        User user2 = new User(null, "test2", "{noop}test2", "test2", "test2", true, new HashSet<>());
+        User user2 = new User(null, "test2", "{noop}test2", "test2", "test2", true, Set.of("ROLE_USER"), new HashSet<>());
         userRepository.save(user2);
 
         for (int i = 0; i < 10; i++) {
@@ -46,10 +47,13 @@ public class StartupDataLoader {
             advertRepository.save(advert4);
         }
 
-        User user3 = new User(null, "test3", "{noop}test3", "test3", "test3", true, new HashSet<>());
-        User user4 = new User(null, "test4", "{noop}test4", "test4", "test4", true, new HashSet<>());
+        User user3 = new User(null, "test3", "{noop}test3", "test3", "test3", true, Set.of("ROLE_USER"), new HashSet<>());
+        User user4 = new User(null, "test4", "{noop}test4", "test4", "test4", true, Set.of("ROLE_USER"), new HashSet<>());
 
         userRepository.save(user3);
         userRepository.save(user4);
+
+        User admin = new User(null, "admin", "{noop}123", "admin", "admin", true, Set.of("ROLE_ADMIN"), new HashSet<>());
+        userRepository.save(admin);
     }
 }

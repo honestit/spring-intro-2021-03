@@ -69,6 +69,7 @@ public class RegistrationController {
         user.setPassword(encodedPassword);
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
+        user.getRoles().add("ROLE_USER");
         user.setActive(true);
 
         log.debug("User to save: {}", user);

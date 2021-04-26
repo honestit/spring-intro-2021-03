@@ -3,6 +3,7 @@ package com.projects.ams.model.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @ToString(exclude = { "password", "favouriteAdverts"})
 @EqualsAndHashCode(of = { "username" })
 @NoArgsConstructor @AllArgsConstructor
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +29,13 @@ public class User {
     private String lastName;
     @Column(nullable = false)
     private Boolean active = Boolean.FALSE;
+
+    @ElementCollection
+    @CollectionTable(name = "users_roles",
+        joinColumns = @JoinColumn(name = "username", referencedColumnName = "username")
+    )
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
 
 //    @ManyToMany(fetch = FetchType.EAGER) -> tego nie należy używać, bo to chamskie rozwiązanie ;)
     // zamiast tego zobacz metodę findUserWithFavouriteAdvertsByUsername w UserRepository

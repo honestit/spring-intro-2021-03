@@ -3,7 +3,6 @@ package com.projects.ams.controllers;
 import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.AdvertRepository;
 import com.projects.ams.model.repositories.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,10 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,16 +19,6 @@ import java.util.Optional;
 public class AdminPanelController {
 
     private AdvertRepository advertRepository;
-
-    public static void main(String[] args) {
-        List<String> kleping = Arrays.asList("Andrzej", "Gosia", "Damian");
-        List<String> teling = Arrays.asList("Andrzej", "Asia", "Marcin", "Damian");
-
-        Collections.shuffle(kleping);
-        Collections.shuffle(teling);
-
-        System.out.printf("Kleping: %s, teling: %s", kleping.get(0), teling.get(0));
-    }
 
     /*
 
