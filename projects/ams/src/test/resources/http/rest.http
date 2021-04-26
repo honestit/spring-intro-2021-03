@@ -21,3 +21,15 @@ DELETE localhost:8080/api/users/4
 ### Usuwanie konkretnego ogłoszenia
 
 DELETE localhost:8080/api/adverts/10
+
+### Tworzymy nowego użytkownika
+
+POST localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "stefan",
+  "firstName": "Stefan",
+  "lastName": "Kowalski",
+  "password": "abc"
+}

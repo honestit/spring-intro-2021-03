@@ -4,6 +4,7 @@ package com.projects.ams.rest;
 import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,15 +20,29 @@ import java.util.Optional;
 public class UsersController {
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UsersController(UserRepository userRepository) {
+    public UsersController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
     // Lista użytkowników (List<User>) zostanie automatycznie zserializowana do formatu JSON
+    // FUTURE TIP: Zamiast zwracać listę encji User powinniśmy stworzyć klasę, np. UserView, w której znajdą się tylko te pola, które chcemy pokazać i listę Userów pobraną z repozytorium zamienić (przepisać dane, te które chcemy) na listę UserViewów
     public List<User> getUsers() {
         return userRepository.findAllWithDataBy();
+    }
+
+    // FUTURE TIP: Zamiast przyjmować encję User powinniśmy stworzyć klasę, np. UserRequest, w której znajdą się tylko te pola, które chcemy aby klient przesłał w celu stworzenia nowego użytkownika. Z obiektu UserRequest przepisujemy potem do encji User i zapisujemy encję User
+    @PostMapping
+    public void createUser(@RequestBody User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setActive(true);
+        user.getRoles().clear();
+        user.getRoles().add("ROLE_USER");
+        userRepository.save(user);
     }
 
 //  GET /api/users/{id}

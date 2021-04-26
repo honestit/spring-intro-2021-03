@@ -1,6 +1,7 @@
 package com.projects.ams.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
-    @JsonIgnore
+//    @JsonIgnore
     private String password;
     @Column(name = "first_name", nullable = false)
     private String firstName;
