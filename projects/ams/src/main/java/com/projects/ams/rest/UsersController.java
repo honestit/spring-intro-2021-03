@@ -30,7 +30,7 @@ public class UsersController {
         return userRepository.findAllWithDataBy();
     }
 
-//  /api/users/{id}
+//  GET /api/users/{id}
     @GetMapping("/{id}")
     // Adnotacja @PathVariable powoduje, że w parametrze metody "id" znajdzie się wartość fragmentu ścieżki określona jako "{id}". Dla ścieżki "/api/users/2" będzie to wartość "2"
     public User getUser(@PathVariable Long id) {
@@ -39,6 +39,17 @@ public class UsersController {
             return optionalUser.get();
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist");
+        }
+    }
+
+    // DELETE /api/users/{id}
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            userRepository.delete(optionalUser.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }

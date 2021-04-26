@@ -13,3 +13,7 @@ GET localhost:8080/api/users/2
 ### Pobieranie konkretnego ogłoszenia
 
 GET localhost:8080/api/adverts/4
+
+### Usuwanie konkretnego użytkownika
+
+DELETE localhost:8080/api/users/4
