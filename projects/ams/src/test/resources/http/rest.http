@@ -9,3 +9,7 @@ GET localhost:8080/api/adverts
 ### Pobieranie konkretnego użytkownika
 
 GET localhost:8080/api/users/2
+
+### Pobieranie konkretnego ogłoszenia
+
+GET localhost:8080/api/adverts/4
