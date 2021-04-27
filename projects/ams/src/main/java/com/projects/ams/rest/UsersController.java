@@ -3,11 +3,14 @@ package com.projects.ams.rest;
 
 import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.UserRepository;
+import com.projects.ams.rest.converters.UserConverter;
+import com.projects.ams.rest.request.CreateUserRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,7 @@ public class UsersController {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private UserConverter userConverter;
 
     public UsersController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -36,9 +40,9 @@ public class UsersController {
 
     // FUTURE TIP: Zamiast przyjmować encję User powinniśmy stworzyć klasę, np. UserRequest, w której znajdą się tylko te pola, które chcemy aby klient przesłał w celu stworzenia nowego użytkownika. Z obiektu UserRequest przepisujemy potem do encji User i zapisujemy encję User
     @PostMapping
-    public void createUser(@RequestBody User user) {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+    public void createUser(@Valid @RequestBody CreateUserRequest request) {
+        User user = userConverter.from(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActive(true);
         user.getRoles().clear();
         user.getRoles().add("ROLE_USER");
