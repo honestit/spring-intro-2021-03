@@ -1,25 +1,30 @@
 package com.projects.ams.controllers;
 
+import com.projects.ams.model.domain.User;
 import com.projects.ams.model.repositories.UserRepository;
 import com.projects.ams.requests.RegisterUserRequest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.sql.DataSource;
-
 import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDate;
+import java.util.Set;
 
 @DisplayName("User web registration spec")
 // Włączamy mechanizm testów Spring Boot'a dla warstwy Web MVC
@@ -61,6 +66,41 @@ class RegistrationControllerTest {
                 .get(URI.create("/register"))
                 .with(SecurityMockMvcRequestPostProcessors.anonymous()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DisplayName("- on request should save new user")
+    void saveNewUser() throws Exception {
+        Mockito.when(userRepository.existsByUsername("test")).thenReturn(false);
+        Mockito.when(passwordEncoder.encode("aB1@aB1#")).thenReturn("encoded");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URI.create("/register"))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", "test")
+                .param("firstName", "fName")
+                .param("lastName", "lName")
+                .param("password", "aB1@aB1#")
+                .param("birthDate", LocalDate.now().minusYears(1).toString()))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/"));
+
+        Mockito.verify(passwordEncoder, Mockito.times(1)).encode("aB1@aB1#");
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUsername("test");
+//        Mockito.verify(userRepository, Mockito.times(1)).save(null); // Konkretna wartość, którą znamy
+//        Mockito.verify(userRepository, Mockito.times(1)).save(ArgumentMatchers.any(User.class)); // Jakaś wartość, która nas nie do końca interesuje i jej nie znamy
+
+        // Kiedy interesuje nas co zostało przekazane do metody mocka, ale tego nie znamy
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class); // Tworzymy przechwytywacza
+        Mockito.verify(userRepository, Mockito.times(1)).save(userCaptor.capture()); // Przechwutujemy parametr
+        User savedUser = userCaptor.getValue();
+
+        Assertions.assertNotNull(savedUser);
+        Assertions.assertEquals("test", savedUser.getUsername());
+        Assertions.assertEquals("fName", savedUser.getFirstName());
+        Assertions.assertEquals("lName", savedUser.getLastName());
+        Assertions.assertEquals("encode", savedUser.getPassword());
+        Assertions.assertTrue(savedUser.getActive());
+        Assertions.assertIterableEquals(Set.of("ROLE_USER"), savedUser.getRoles());
     }
 
 }
