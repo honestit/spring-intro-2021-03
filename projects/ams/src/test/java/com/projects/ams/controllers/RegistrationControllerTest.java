@@ -1,6 +1,7 @@
 package com.projects.ams.controllers;
 
 import com.projects.ams.model.repositories.UserRepository;
+import com.projects.ams.requests.RegisterUserRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.sql.DataSource;
+
+import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,8 +43,14 @@ class RegistrationControllerTest {
 
     @Test
     @DisplayName("- on request should prepare registration page")
-    void prepareRegistrationPage() {
-
+    void prepareRegistrationPage() throws Exception {
+        // Metoda perform z MockMvc służy do wykonania żądania.
+        // Żądanie budujemy z wykorzystaniem klasy MockMvcRequestBuilders
+        mockMvc.perform(MockMvcRequestBuilders.get(URI.create("/register")))
+                .andDo(MockMvcResultHandlers.print()) // do wyświetlenia podglądu odpowiedzi HTTP i stanu MVC
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("registration-form"))
+                .andExpect(MockMvcResultMatchers.model().attribute("registration", new RegisterUserRequest()));
     }
 
 }
