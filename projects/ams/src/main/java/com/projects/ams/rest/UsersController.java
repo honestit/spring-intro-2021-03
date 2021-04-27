@@ -26,9 +26,10 @@ public class UsersController {
     private PasswordEncoder passwordEncoder;
     private UserConverter userConverter;
 
-    public UsersController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UsersController(UserRepository userRepository, PasswordEncoder passwordEncoder, UserConverter userConverter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userConverter = userConverter;
     }
 
     @GetMapping
