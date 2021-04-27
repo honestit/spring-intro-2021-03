@@ -55,4 +55,28 @@ class UserConverterTest {
                 .isEqualToComparingOnlyGivenFields(expected, "username", "password", "firstName", "lastName");
     }
 
+    @Test
+    @DisplayName("- should throw an exception on null create user request")
+    void convertFromNull() {
+        // given
+        CreateUserRequest nullRequest = null;
+
+        // when + then
+        assertThrows(IllegalArgumentException.class, () -> cut.from(nullRequest));
+
+        // when + then + assertj
+        Assertions.assertThatThrownBy(() -> cut.from(nullRequest))
+                .hasMessage("Request cannot be null")
+                .isInstanceOf(IllegalArgumentException.class);
+
+        // wersja "po swojemu
+//        Exception ex = null;
+//        try {
+//            cut.from(nullRequest);
+//        } catch (Exception e) {
+//            ex = e;
+//        }
+//        assertNotNull(ex);
+//        assertEquals(IllegalArgumentException.class, ex.getClass());
+    }
 }
