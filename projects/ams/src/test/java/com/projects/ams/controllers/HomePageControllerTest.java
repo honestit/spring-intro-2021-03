@@ -12,18 +12,16 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.sql.DataSource;
-
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Chęci(true)
 @DisplayName("User home page spec")
@@ -51,12 +49,14 @@ class HomePageControllerTest {
     }
 
     @Test
-    @DisplayName("- on request should show home page with adverts")
+    @DisplayName("- on request from anonymous user should show home page with limited adverts")
     void getHomePage() throws Exception {
         Mockito.when(advertRepository.findFirst10ByOrderByPostedDesc())
                 .thenReturn(List.of(someValidAdvert));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URI.create("/")))
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(URI.create("/"))
+                .with(SecurityMockMvcRequestPostProcessors.anonymous()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("home-page"))
                 .andExpect(MockMvcResultMatchers.model().attribute("adverts", Matchers.iterableWithSize(1)));
