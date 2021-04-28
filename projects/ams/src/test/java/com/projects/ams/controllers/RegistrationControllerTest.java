@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -98,9 +97,31 @@ class RegistrationControllerTest {
         Assertions.assertEquals("test", savedUser.getUsername());
         Assertions.assertEquals("fName", savedUser.getFirstName());
         Assertions.assertEquals("lName", savedUser.getLastName());
-        Assertions.assertEquals("encode", savedUser.getPassword());
+        Assertions.assertEquals("encoded", savedUser.getPassword());
         Assertions.assertTrue(savedUser.getActive());
         Assertions.assertIterableEquals(Set.of("ROLE_USER"), savedUser.getRoles());
+    }
+
+    @Test
+    @DisplayName("- on request when invalid data sent should return with errors in view")
+    void requestWithInvalidData() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URI.create("/register"))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", "")
+                .param("firstName", "")
+                .param("lastName", "")
+                .param("password", "")
+                .param("birthDate", ""))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("registration-form"))
+                .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors(
+                        "registration",
+                        "username", "firstName", "lastName", "password", "birthDate"
+                ));
+
+        Mockito.verifyNoInteractions(userRepository);
+        Mockito.verify(userRepository, Mockito.never()).save(ArgumentMatchers.any());
     }
 
 }
