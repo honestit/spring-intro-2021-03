@@ -6,6 +6,9 @@ import com.projects.ams.requests.RegisterUserRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -102,17 +105,22 @@ class RegistrationControllerTest {
         Assertions.assertIterableEquals(Set.of("ROLE_USER"), savedUser.getRoles());
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("- on request when invalid data sent should return with errors in view")
-    void requestWithInvalidData() throws Exception {
+    @CsvSource({
+            "'','','','',''",
+            "ab,ab,ab,ab,2999-01-01",
+            "abcdefghijklm,ab,ab,abAbabAbabAb,2999-01-01"
+    })
+    void requestWithInvalidData(String username, String firstName, String lastName, String password, String birthDate) throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                 .post(URI.create("/register"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("username", "")
-                .param("firstName", "")
-                .param("lastName", "")
-                .param("password", "")
-                .param("birthDate", ""))
+                .param("username", username)
+                .param("firstName", firstName)
+                .param("lastName", lastName)
+                .param("password", password)
+                .param("birthDate", birthDate))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("registration-form"))
                 .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors(
