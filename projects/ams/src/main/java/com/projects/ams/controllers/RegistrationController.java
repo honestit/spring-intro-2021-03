@@ -79,6 +79,7 @@ public class RegistrationController {
         // jest jedna metoda: zapisz zmianę w repozytorium
         if (userRepository.existsByUsername(request.getUsername())) {
             log.warn("User with same username already exists");
+            errors.rejectValue("username", null, "User with given name already exists");
             return "registration-form";
         }
         userRepository.save(user);

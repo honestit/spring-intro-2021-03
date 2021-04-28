@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -129,6 +128,27 @@ class RegistrationControllerTest {
                 ));
 
         Mockito.verifyNoInteractions(userRepository);
+        Mockito.verify(userRepository, Mockito.never()).save(ArgumentMatchers.any());
+    }
+
+    @Test
+    @DisplayName("- on request with existing username should not save a new user")
+    void userWithExistingUsername() throws Exception {
+        Mockito.when(userRepository.existsByUsername("test")).thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URI.create("/register"))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", "test")
+                .param("firstName", "fName")
+                .param("lastName", "lName")
+                .param("password", "aB1@aB1#")
+                .param("birthDate", LocalDate.now().minusYears(1).toString()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("registration-form"))
+                .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("registration", "username"));
+
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUsername("test");
         Mockito.verify(userRepository, Mockito.never()).save(ArgumentMatchers.any());
     }
 
